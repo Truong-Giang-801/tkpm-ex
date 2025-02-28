@@ -1,0 +1,22 @@
+.home-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .home-header {
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .home-content {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
