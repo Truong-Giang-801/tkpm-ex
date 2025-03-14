@@ -1,72 +1,70 @@
-/* General form styling */
 .form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: linear-gradient(to bottom, #e3f2fd, #90caf9);
-  }
-  
-  .form-box {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    width: 400px;
-  }
-  
-  .form-title {
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  /* Form fields */
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: #444;
-    margin-bottom: 5px;
-  }
-  
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    outline: none;
-    transition: border 0.3s ease;
-  }
-  
-  .form-group input:focus,
-  .form-group select:focus {
-    border-color: #1976d2;
-  }
-  
-  /* Submit button */
-  .submit-button {
-    width: 100%;
-    padding: 10px;
-    background: #1976d2;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .submit-button:hover {
-    background: #1565c0;
-  }
-  
+  justify-content: center;
+  align-items: top;
+  background-color: #fff;
+  display: flex;
+}
+
+.form-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 95%;
+}
+
+.form-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  width: 100%;
+}
+.scrollable-form {
+  max-height: 500px;
+  overflow-y: auto;
+  width: 100%;
+}
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-column {
+  flex: 1;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Prevents width issues with padding */
+}
+
+.submit-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
