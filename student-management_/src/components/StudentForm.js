@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getStatuses, getPrograms } from "../utils/storage";
 import "./style/StudentForm.css";
+import Swal from "sweetalert2";
 
 const StudentForm = ({ student, onSubmit }) => {
   const [formData, setFormData] = useState(
@@ -39,8 +40,45 @@ const StudentForm = ({ student, onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+  
+    try {
+      const response = await fetch("http://localhost:5123/api/students", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        Swal.fire({
+          icon: "error",
+          title: "Error!",
+          text: result.error || "Failed to add student.",
+        });
+        return;
+      }
+  
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Student has been added successfully!",
+        confirmButtonText: "OK",
+      }).then(() => {
+        onSubmit(result.student); // Pass newly added student to parent
+      });
+  
+    } catch (error) {
+      console.error("Error adding student:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "An error occurred while adding the student.",
+      });
+    }
   };
+  
+  
 
   return (
     <div className="form-container">

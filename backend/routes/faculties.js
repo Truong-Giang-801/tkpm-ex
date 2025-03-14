@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Faculty = require("../models/Faculty");
+const Student = require("../models/Student"); // Import model Student
 
 // 📌 Create Faculty
 router.post("/", async (req, res) => {
@@ -24,27 +25,70 @@ router.get("/", async (req, res) => {
 });
 
 // 📌 Update Faculty
-router.put("/:id", async (req, res) => {
+router.put("/:facultyId", async (req, res) => {
   try {
-    const updatedFaculty = await Faculty.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    updatedFaculty
-      ? res.status(200).json({ message: "Faculty updated successfully", faculty: updatedFaculty })
-      : res.status(404).json({ error: "Faculty not found" });
+    const { facultyId } = req.params;
+    const { name } = req.body;
+
+    // 🔍 Find the faculty by ID
+    const faculty = await Faculty.findById(facultyId);
+    if (!faculty) {
+      return res.status(404).json({ error: "Faculty not found" });
+    }
+
+    const oldFacultyName = faculty.name; // Store old name for student update
+
+    // 🔄 Update faculty name
+    faculty.name = name;
+    await faculty.save();
+
+    // 🔄 Update all students linked to this faculty
+    const result = await Student.updateMany(
+      { faculty: oldFacultyName }, // Find students by old faculty name
+      { faculty: name } // Update to new faculty name
+    );
+
+    console.log(`✅ Updated ${result.modifiedCount} students`); // Debugging log
+
+    res.status(200).json({ message: "Faculty updated successfully", name });
   } catch (error) {
+    console.error("❌ Error updating faculty:", error);
     res.status(500).json({ error: "Failed to update faculty" });
   }
 });
 
-// 📌 Delete Faculty
-router.delete("/:id", async (req, res) => {
+
+
+
+// 📌 Delete Faculty only if no students are linked
+router.delete("/:facultyId", async (req, res) => {
   try {
-    const deletedFaculty = await Faculty.findByIdAndDelete(req.params.id);
-    deletedFaculty
-      ? res.status(200).json({ message: "Faculty deleted successfully" })
-      : res.status(404).json({ error: "Faculty not found" });
+    const facultyId = req.params.facultyId;
+
+    // 🔍 Check if faculty exists
+    const faculty = await Faculty.findById(facultyId);
+    if (!faculty) {
+      return res.status(404).json({ error: "Faculty not found" });
+    }
+
+    // 🔍 Check if any students are linked to this faculty (by ID, not name)
+    const studentsCount = await Student.countDocuments({ faculty: faculty.name }); 
+    if (studentsCount > 0) {
+      return res.status(400).json({
+        error: `Cannot delete faculty. ${studentsCount} student(s) are linked to this faculty.`,
+      });
+    }
+
+    // 🚀 Delete the faculty if no students are linked
+    await Faculty.findByIdAndDelete(facultyId);
+    res.status(200).json({ message: "Faculty deleted successfully" });
+
   } catch (error) {
+    console.error("❌ Error deleting faculty:", error);
     res.status(500).json({ error: "Failed to delete faculty" });
   }
 });
+
+
 
 module.exports = router;

@@ -2,18 +2,20 @@ const express = require("express");
 const router = express.Router();
 const Student = require("../models/Student");
 
+
 // 📌 Create Student
 router.post("/", async (req, res) => {
-
   try {
     const { mssv } = req.body;
     if (!mssv) {
       return res.status(400).json({ error: "MSSV is required" });
     }
+    
     const MSSV = mssv.toUpperCase();
     const existingStudent = await Student.findOne({ MSSV });
+
     if (existingStudent) {
-      return res.status(400).json({ error: "MSSV already exists." });
+      return res.status(400).json({ error: `MSSV "${MSSV}" already exists.` });
     }
 
     const newStudent = new Student(req.body);
@@ -21,11 +23,25 @@ router.post("/", async (req, res) => {
 
     console.log("✅ Student added:", newStudent);
     res.status(201).json({ message: "Student added successfully", student: newStudent });
+
   } catch (error) {
     console.error("❌ Error:", error);
-    res.status(500).json({ error: "Failed to save student" });
+
+    // Handle MongoDB duplicate key error (code 11000)
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0]; // Get the duplicate field (e.g., 'mssv')
+      const value = error.keyValue[field]; // Get the duplicate value
+      
+      return res.status(400).json({
+        error: `Duplicate MSSV: ${field.toUpperCase()} "${value}" already exists.`,
+        details: error.message // Provide the full error message for debugging
+      });
+    }
+
+    res.status(500).json({ error: "Failed to save student", details: error.message });
   }
 });
+
 
 
 // 📌 Get All Students
