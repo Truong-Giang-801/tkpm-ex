@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import StudentItem from "./StudentItem";
-import EditStudentForm from "./EditStudentForm"; // Import the EditStudentForm component
-import Modal from "./Modal"; // Import the Modal component
+import EditStudentForm from "./EditStudentForm"; 
+import Modal from "./Modal"; 
 import axios from "axios";
 import "./style/StudentList.css";
 
@@ -9,9 +9,9 @@ const API_URL = "http://localhost:5123/api/students";
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
-  const [editingStudent, setEditingStudent] = useState(null); // New state for editing
+  const [editingStudent, setEditingStudent] = useState(null);
 
-  // 📌 Fetch all students from API
+  // 📌 Fetch students when component mounts and when changes occur
   useEffect(() => {
     fetchStudents();
   }, []);
@@ -25,33 +25,36 @@ const StudentList = () => {
     }
   };
 
-  // 📌 Delete Student by ID
+  // 📌 Delete student and update list
   const handleDelete = async (id) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa sinh viên này?")) return;
 
     try {
       await axios.delete(`${API_URL}/${id}`);
-      setStudents(students.filter((student) => student._id !== id));
+      setStudents((prevStudents) => prevStudents.filter((s) => s._id !== id));
     } catch (error) {
       console.error("❌ Failed to delete student:", error);
     }
   };
 
-  // 📌 Set the student for editing
+  // 📌 Set student for editing
   const handleEditClick = (student) => {
     setEditingStudent(student);
   };
 
-  // 📌 Save the edited student data
+  // 📌 Save edited student data & refresh the list
   const handleEditSubmit = async (updatedData) => {
     try {
-      const response = await axios.put(`${API_URL}/${updatedData._id}`, updatedData);
-      setStudents(students.map((s) => (s._id === updatedData._id ? response.data.student : s)));
-      setEditingStudent(null); // Close the edit form after successful edit
+      await axios.put(`${API_URL}/${updatedData._id}`, updatedData); // ✅ Only one API call here
+      setStudents((prevStudents) =>
+        prevStudents.map((s) => (s._id === updatedData._id ? updatedData : s))
+      );
+      setEditingStudent(null);
     } catch (error) {
       console.error("❌ Failed to update student:", error);
     }
   };
+  
 
   return (
     <div className="student-list">
@@ -61,27 +64,23 @@ const StudentList = () => {
             key={student._id}
             student={student}
             onDelete={() => handleDelete(student._id)}
-            onEdit={() => handleEditClick(student)} // Trigger editing on click
+            onEdit={() => handleEditClick(student)}
           />
         ))
       ) : (
         <p className="no-students">Không có sinh viên nào</p>
       )}
-      
-      {/* Modal with EditStudentForm */}
 
+      {/* Modal with EditStudentForm */}
       <Modal isOpen={editingStudent !== null} onClose={() => setEditingStudent(null)}>
         {editingStudent && (
           <EditStudentForm
-          
-            studentId={editingStudent?._id}  // ✅ Pass only the ID
+            studentId={editingStudent._id}
             onSubmit={handleEditSubmit}
             onCancel={() => setEditingStudent(null)}
           />
-
-      )}
-    </Modal>
-
+        )}
+      </Modal>
     </div>
   );
 };

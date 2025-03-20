@@ -6,7 +6,7 @@ import {
 } from "../utils/storage";
 import "./style/StudentForm.css";
 
-const EditStudentForm = ({ studentId, onSubmit }) => {
+const EditStudentForm = ({ studentId, onSubmit,onCancel }) => {
   const [formData, setFormData] = useState({
     mssv: "", name: "", dob: "", gender: "",
     faculty: "", program: "", address: "",
@@ -113,36 +113,9 @@ const EditStudentForm = ({ studentId, onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch(`http://localhost:5123/api/students/${studentId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      console.log("📤 Sent request:", formData);
-
-      if (response.status === 204) {
-        console.warn("⚠️ Server returned 204 No Content, but expected data.");
-        alert("Student updated, but no response data.");
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log("✅ Student updated:", result);
-      alert(result.message);
-    } catch (error) {
-      console.error("❌ Error updating student:", error);
-      alert("Failed to connect to the server.");
-    }
+    onSubmit(formData);  // 🚀 Send data to parent instead of making API call
   };
+  
 
   return (
     <div className="form-container">
