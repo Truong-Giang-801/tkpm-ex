@@ -9,11 +9,9 @@
   border-radius: 8px;
 }
 
-/* Logo Styling */
-.logo {
-  font-size: 22px;
-  font-weight: bold;
-  color: white;
+/* Navigation Container */
+.navContainer {
+  flex: 1;
 }
 
 /* Navigation Links */
@@ -21,6 +19,8 @@
   list-style: none;
   display: flex;
   gap: 20px;
+  padding: 0;
+  margin: 0;
 }
 
 .navLinks li {
@@ -39,6 +39,25 @@
   color: #ffdd57; /* Yellow hover effect */
 }
 
+/* Logo Container */
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logoText {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+}
+
+/* Logo Styling */
+.logo {
+  height: 90px; /* Điều chỉnh kích thước logo */
+  max-width: 150px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .navbar {
@@ -51,5 +70,9 @@
     margin-top: 10px;
     flex-direction: column;
     gap: 10px;
+  }
+
+  .logoContainer {
+    margin-top: 10px;
   }
 }
