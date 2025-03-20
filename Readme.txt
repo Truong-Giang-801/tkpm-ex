@@ -5,7 +5,8 @@ MONGO_URI=mongodb+srv://giangle8013:Giangdeptrai123@cluster0.8xtwk.mongodb.net/?
 PORT=5123
 
 npm install
-npm npm install sweetalert2
+npm install sweetalert2
+npm install lucide-react
 
 npm start
 
