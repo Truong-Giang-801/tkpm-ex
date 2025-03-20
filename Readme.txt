@@ -8,6 +8,6 @@ npm install
 npm install sweetalert2
 npm install lucide-react
 
-npm start
+frontend: npm start
 
-backend : node server.js
+backend: node server.js
